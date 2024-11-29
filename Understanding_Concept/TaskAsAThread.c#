@@ -1,1 +1,45 @@
 
+Task AS A Thread-
+#namespace used --System.Threading.Tasks.Task
+#status is represented by a TaskStatus enumeration
+ ie started running, ran to completion, was canceled, or has thrown an exception. 
+#When constuctor is called the Delegate comes into picture--Action
+#taskA.wait(); is blocking the main until the TaskA complete the job
+#In Thread u need to kill the process but not in Task 
+#Task gives the result ie collect the result and  there is no concept of Result in Thread 
+ 
+/* TaskStatus enumeration*/
+
+class Program
+    {
+        static void Main(string[] args)
+               {
+            Thread.CurrentThread.Name = "Main";
+ 
+            // Create a task and supply a user delegate by using a lambda expression. 
+            Task taskA = new Task(() => Console.WriteLine("Hello from taskA."));
+            // Start the task.
+            taskA.Start();
+ 
+            // Output a message from the calling thread.
+            Console.WriteLine("Hello from thread '{0}'.",  Thread.CurrentThread.Name);
+            //Note call to the Task.Wait method to ensure that the task completes execution before the console mode application ends.
+            taskA.Wait();
+            Console.WriteLine("done");
+	}
+    }
+}
+o/p
+Hello from thread 'Main'.
+Hello from taskA.
+done
+
+#These was for Thread programming
+*namespace used --System.Threading.Thread
+*Can one Thread can be async prog .
+Yes , we have java
+*When constuctor is called the Delegate comes into picture -
+parametered Start() , Thread Start()
+*thread.sleep(); is blocking the main until the Thread complete the job
+*In Thread u need to kill the process but not in Task .
+*Thread.Sleep()-ntg can be done  to abort this except waiting until the time elapses or by restarting the application because thread.Sleep suspends the thread the 's making the call .
