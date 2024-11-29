@@ -1,1 +1,75 @@
 
+                   /* Task.await */
+An async method can return only void or a Task.
+An async method will be run synchronously if it does not contain the await keyword.
+Await will wait to collect the result .
+
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    class Program
+    {
+        static void Main()
+        {
+            int a = 3;
+            while (a >= 0)
+            {
+                // Start computation.
+                Example();
+                // Handle user input.
+                string result = Console.ReadLine();
+                Console.WriteLine("You typed: " + result);
+                a--;
+            }
+        }
+        static async void Example()
+        {   // This method runs asynchronously.
+            int t = await Task.Run(() => Allocate());
+            Console.WriteLine("Compute: " + t);
+        }
+        static int Allocate()
+        {   // Compute total count of digits in strings.
+            int size = 0;
+            for (int z = 0; z < 100; z++)
+            {
+                for (int i = 0; i < 10000; i++)
+                {
+                    string value = i.ToString();
+                    if (value == null)
+                    {
+                        return 0;
+                    }
+                    size += value.Length;
+                }
+            }
+            return size;
+        }
+    }
+}
+
+
+
+
+o/p
+Compute: 3889000
+1
+You typed: 1
+Compute: 3889000
+3
+You typed: 3
+Compute: 3889000
+5
+You typed: 5
+Compute: 3889000
+6
+You typed: 6
+#
+is await blocking the code?
+the process doesnt stop , it works side by side and gives the result than the statement in await get exceuted.
