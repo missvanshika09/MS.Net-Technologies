@@ -1,0 +1,807 @@
+
+Threading is not good because this is BLOCKING programming.Thus we jump to asyncrounous progrraming.
+basic --
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    internal class Program
+    {
+            static void Main(string[] args)//1 st thread
+            {
+                Console.WriteLine("***** Primary Thread stats *****\n");
+
+                // Obtain and name the current thread.
+                Thread primaryThread = Thread.CurrentThread;//getter
+
+                primaryThread.Name = "ThePrimaryThread";//reference to the main running thread //name = primary thread
+
+                //primaryThread.Priority = ThreadPriority.Highest;            // Print out some stats about this thread.
+                Console.WriteLine("Thread Name: {0}", primaryThread.Name);// getter called gives ThePrimaryThread
+
+                Console.WriteLine("Has thread started?: {0}", primaryThread.IsAlive);//true//.IsAlive gives Boolean value
+                Console.WriteLine("Priority Level: {0}", primaryThread.Priority);//default is normal
+                                                                                 //
+                primaryThread.Priority = ThreadPriority.Highest;//  change the prioity to highest
+                Console.WriteLine("Priority Level: {0}", primaryThread.Priority);// different 
+                Console.WriteLine("Thread State: {0}", primaryThread.ThreadState);// Running
+                Console.ReadLine();
+            }
+        }
+    }
+
+output--
+***** Primary Thread stats *****
+
+Thread Name: ThePrimaryThread2
+Has thread started?: True
+Priority Level: Normal
+Priority Level: Highest
+Thread State: Running
+=============================================================
+Difference between when 1 or 2 thread is excuted --
+code:-
+using System;
+using System.Threading;
+//using System.Windows.Forms;
+namespace SimpleMultiThreadApp
+{
+    public class Printer
+    {
+        public void PrintNumbers()
+        {
+            // Display Thread info.
+            Console.WriteLine("-> {0} is executing PrintNumbers()",
+              Thread.CurrentThread.Name);
+            // Print out numbers.
+            Console.Write("Your numbers: ");
+            for (int i = 0; i < 10; i++)
+            {
+                Console.Write("{0}, ", i);
+                Thread.Sleep(2000);
+            }
+            Console.WriteLine();
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("***** The Amazing Thread App *****\n");
+            Console.Write("Do you want [1] or [2] threads? ");
+            string threadCount = Console.ReadLine(); //gives char o/p
+
+            // Name the current thread.
+            Thread primaryThread = Thread.CurrentThread;
+            primaryThread.Name = "Primary";
+
+            // Display Thread info.
+            Console.WriteLine("-> {0} is executing Main()",
+            Thread.CurrentThread.Name);
+
+            // Make worker class.
+            Printer p = new Printer();
+
+            switch (threadCount)
+            {// Now make the thread.
+                case "2":
+                    Thread backgroundThread = new Thread(new ThreadStart(p.PrintNumbers));//delegate type
+                    //naming given to above new created thread
+                    backgroundThread.Name = "Secondary";
+                    backgroundThread.Start();// start is looking to PrintNumbers() 
+                    break;
+                case "1":
+                    p.PrintNumbers();
+                    break;
+                default:
+                    Console.WriteLine("I don't know what you want...you get 1 thread.");
+                    goto case "1";
+            }
+            // Do some additional work.
+            MessageBox.Show("I'm busy!", "Work on main thread...");
+            Console.ReadLine();
+        }
+
+    }
+}
+
+
+
+OutPut---
+
+
+
+#note
+Multithreading makes look ur prog is working faster, this above 
+==========================================
+This Program will show how two Thread works same time [one after another]?
+Thread is creaded outside in this code .
+
+code-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    class MyThread
+    {
+        public int count;
+        string thrdName;
+
+        public MyThread(string name)
+        {
+            count = 0;
+            thrdName = name;
+        }
+
+        // Entry point of thread. 
+        public void run()
+        {
+            Console.WriteLine(thrdName + " starting.");
+
+            do
+            {
+                Thread.Sleep(500);  //static method
+                Console.WriteLine("In " + thrdName +
+                      ", count is " + count);
+                count++;
+            } while (count < 10);
+
+            Console.WriteLine(thrdName + " terminating.");
+        }
+    }
+
+
+
+    class MultiThread
+    {
+        public static void Main()
+        {
+            Console.WriteLine("Main thread starting.");
+
+            // First, construct a MyThread object. 
+            MyThread mt = new MyThread("Child #1");
+
+            //Thread is sealed class
+            // Next, construct a thread from that object. 
+            Thread newThrd = new Thread(mt.run);
+            //ThreadStart is deligate
+
+            // Finally, start execution of the thread. 
+            newThrd.Start();
+
+            do
+            {
+                Console.Write(".");
+                Thread.Sleep(100);
+            } while (mt.count != 10);
+
+            Console.WriteLine("Main thread ending.");
+        }
+    }
+}
+output--
+Main thread starting.
+.Child #1 starting.
+....In Child #1, count is 0
+.....In Child #1, count is 1
+.....In Child #1, count is 2
+....In Child #1, count is 3
+.....In Child #1, count is 4
+.....In Child #1, count is 5
+....In Child #1, count is 6
+.....In Child #1, count is 7
+.....In Child #1, count is 8
+.....In Child #1, count is 9
+Child #1 terminating.
+Main thread ending.
+
+#note 
+
+  we dont decide the flow thus cannt use when 1 task dependen on another task , just to learn for FileHandling 
+===================================================
+Creation of thread is push into the constructor.
+< ultimately just to make user feel that prg is working faster  but in CPU 1 thread is working at a time ie syncronicsly>
+code-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    class MyThread
+    {
+        public int count;
+        public Thread thrd;
+        public MyThread(string name) //constructor
+        {
+            count = 0;
+            thrd = new Thread(this.run); //obj cread f thread class & now look to run
+            thrd.Name = name; // set the name of the thread 
+            thrd.Start(); // start the thread 
+        }
+        // Entry point of thread. 
+        void run()
+        {
+            Console.WriteLine(thrd.Name + " starting.");
+            do
+            {
+                Thread.Sleep(500);
+                Console.WriteLine("In " + thrd.Name + ", count is " + count);
+                count++;
+            } while (count < 10);
+            Console.WriteLine(thrd.Name + " terminating.");
+        }
+    }
+
+    class MultiThreadImproved
+    {
+        public static void Main()
+        {
+            Console.WriteLine("Main thread starting.");
+
+            // First, construct a MyThread object. 
+            MyThread mt = new MyThread("Child #1");
+
+            do
+           {
+                Console.Write(".");
+                Thread.Sleep(100);
+           } while (mt.count != 10);
+
+            Console.WriteLine("Main thread ending.");
+        }
+    }
+
+}
+
+
+
+o/p
+Main thread starting.
+.Child #1 starting.
+....In Child #1, count is 0
+.....In Child #1, count is 1
+.....In Child #1, count is 2
+....In Child #1, count is 3
+.....In Child #1, count is 4
+.....In Child #1, count is 5
+....In Child #1, count is 6
+.....In Child #1, count is 7
+....In Child #1, count is 8
+.....In Child #1, count is 9
+Child #1 terminating.
+Main thread ending.
+
+#All Thread are forground thread ie they fill finish the given job even if Main Thread terminate.
+thus to keep the main till the job finish we used -
+do{
+} while ();
+ do
+ {
+     Console.Write(".");
+     Thread.Sleep(100);
+} while (mt.count != 10);
+
+ Console.WriteLine("Main thread ending.");
+====================================================================
+Multiple assigment done with the use of number of Threads ie 4 in the below code -
+code-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    // Create multiple threads of execution. 
+    using System;
+    using System.Threading;
+
+    class MyThread
+    {
+        public int count;
+        public Thread thrd;
+
+        public MyThread(string name) //constructor is called 3 times for the main entry point called 3 thread
+        {
+            count = 0;
+            thrd = new Thread(this.run);
+            thrd.Name = name;
+            thrd.Start();
+        }
+
+        // Entry point of thread. 
+        void run()
+        {
+            Console.WriteLine(thrd.Name + " starting.");
+
+            do
+            {
+                Thread.Sleep(500);
+                Console.WriteLine("In " + thrd.Name +
+                                  ", count is " + count);
+                count++;
+            } while (count < 10);
+
+            Console.WriteLine(thrd.Name + " terminating.");
+        }
+    }
+    class MoreThreads
+    {
+        public static void Main()
+        {
+            Console.WriteLine("Main thread starting.");
+
+            // Construct three threads. 
+            MyThread mt1 = new MyThread("Child #1");
+            MyThread mt2 = new MyThread("Child #2");
+            MyThread mt3 = new MyThread("Child #3");
+
+            do 
+            {
+                Console.Write(".");
+                Thread.Sleep(100);
+            } while (mt1.count < 10 ||
+                     mt2.count < 10 ||
+                     mt3.count < 10);
+
+            Console.WriteLine("Main thread ending.");
+        }
+    }
+
+}
+
+#note
+As you can see, once started, all three child threads share the CPU. Again, because of differences among system configurations, operating systems, and other environmental factors, when you run the program, the output you see may differ slightly
+
+
+o/p
+Main thread starting.
+Child #1 starting.
+Child #2 starting.
+Child #3 starting.
+.....In Child #2, count is 0
+In Child #1, count is 0
+In Child #3, count is 0
+.....In Child #3, count is 1
+In Child #1, count is 1
+In Child #2, count is 1
+.....In Child #1, count is 2
+In Child #3, count is 2
+In Child #2, count is 2
+....In Child #2, count is 3
+In Child #1, count is 3
+In Child #3, count is 3
+.....In Child #1, count is 4
+In Child #3, count is 4
+In Child #2, count is 4
+....In Child #3, count is 5
+In Child #2, count is 5
+In Child #1, count is 5
+.....In Child #2, count is 6
+In Child #3, count is 6
+In Child #1, count is 6
+.....In Child #3, count is 7
+In Child #2, count is 7
+In Child #1, count is 7
+.....In Child #3, count is 8
+In Child #2, count is 8
+In Child #1, count is 8
+....In Child #3, count is 9
+Child #3 terminating.
+In Child #2, count is 9
+Child #2 terminating.
+In Child #1, count is 9
+Child #1 terminating.
+Main thread ending.
+
+=======================================================
+USING  These ways we make sure that Main( ie host dnt nt leave before the guest leaves ie Thread complete the task )
+1-join
+#Join( ) waits until the thread on which it is called terminates
+We have little control on the order of Thread 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    // Create multiple threads of execution. 
+    using System;
+    using System.Threading;
+
+    class MyThread
+    {
+        public int count;
+        public Thread thrd;
+
+        public MyThread(string name) //constructor is called 3 times for the main entry point called 3 thread
+        {
+            count = 0;
+            thrd = new Thread(this.run);
+            thrd.Name = name;
+            thrd.Start();
+        }
+
+        // Entry point of thread. 
+        void run()
+        {
+            Console.WriteLine(thrd.Name + " starting.");
+
+            do
+            {
+                Thread.Sleep(500);
+                Console.WriteLine("In " + thrd.Name +
+                                  ", count is " + count);
+                count++;
+            } while (count <10);
+
+            Console.WriteLine(thrd.Name + " terminating.");
+        }
+    }
+    class JoinThreads
+    {
+        public static void Main()
+        {
+            Console.WriteLine("Main thread starting.");
+
+            // Construct three threads. 
+            MyThread mt1 = new MyThread("Child #1");
+            MyThread mt2 = new MyThread("Child #2");
+            MyThread mt3 = new MyThread("Child #3");
+
+            mt1.thrd.Join();
+            Console.WriteLine("Child #1 joined.");
+
+            mt2.thrd.Join();
+            Console.WriteLine("Child #2 joined.");
+
+            mt3.thrd.Join();
+            Console.WriteLine("Child #3 joined.");
+
+            Console.WriteLine("Main thread ending.");
+        }
+    }
+
+}
+
+o/p
+Main thread starting.
+Child #1 starting.
+Child #2 starting.
+Child #3 starting.
+In Child #1, count is 0
+In Child #2, count is 0
+In Child #3, count is 0
+In Child #1, count is 1
+In Child #2, count is 1
+In Child #3, count is 1
+In Child #1, count is 2
+In Child #3, count is 2
+In Child #2, count is 2
+In Child #1, count is 3
+In Child #3, count is 3
+In Child #2, count is 3
+In Child #1, count is 4
+In Child #3, count is 4
+In Child #2, count is 4
+In Child #1, count is 5
+In Child #2, count is 5
+In Child #3, count is 5
+In Child #1, count is 6
+In Child #3, count is 6
+In Child #2, count is 6
+In Child #1, count is 7
+In Child #2, count is 7
+In Child #3, count is 7
+In Child #1, count is 8
+In Child #3, count is 8
+In Child #2, count is 8
+In Child #1, count is 9
+Child #1 terminating.
+Child #1 joined.
+In Child #2, count is 9
+Child #2 terminating.
+In Child #3, count is 9
+Child #3 terminating.
+Child #2 joined.
+Child #3 joined.
+Main thread ending.
+---------------------------------------------------------------
+2-IsAlive
+can interrogate the read-only IsAlive property for the thread. It is defined like this
+public bool IsAlive { get; }
+IsAlive returns true if the thread upon which it is called is still running. It returns false otherwise. To try IsAlive, substitute this version of MoreThreads for the one shown in the preceding program
+
+
+same the as above code before Main entry point 
+// Use IsAlive to wait for threads to end. 
+class MoreThreads { 
+  public static void Main() { 
+    Console.WriteLine("Main thread starting."); 
+ 
+    // Construct three threads. 
+    MyThread mt1 = new MyThread("Child #1"); 
+    MyThread mt2 = new MyThread("Child #2"); 
+    MyThread mt3 = new MyThread("Child #3"); 
+ 
+    do { 
+      Console.Write("."); 
+      Thread.Sleep(100); 
+    } while (mt1.thrd.IsAlive ||
+             mt2.thrd.IsAlive ||
+             mt3.thrd.IsAlive); 
+ 
+    Console.WriteLine("Main thread ending."); 
+  } 
+}
+
+o/p
+Main thread starting.
+Child #1 starting.
+.Child #3 starting.
+Child #2 starting.
+....In Child #2, count is 0
+In Child #3, count is 0
+In Child #1, count is 0
+.....In Child #1, count is 1
+In Child #3, count is 1
+In Child #2, count is 1
+.....In Child #2, count is 2
+In Child #1, count is 2
+In Child #3, count is 2
+....In Child #3, count is 3
+In Child #1, count is 3
+In Child #2, count is 3
+.....In Child #2, count is 4
+In Child #1, count is 4
+In Child #3, count is 4
+.....In Child #3, count is 5
+In Child #1, count is 5
+In Child #2, count is 5
+....In Child #2, count is 6
+In Child #3, count is 6
+In Child #1, count is 6
+.....In Child #3, count is 7
+In Child #1, count is 7
+In Child #2, count is 7
+.....In Child #1, count is 8
+In Child #2, count is 8
+In Child #3, count is 8
+.....In Child #1, count is 9
+Child #1 terminating.
+In Child #2, count is 9
+Child #2 terminating.
+In Child #3, count is 9
+Child #3 terminating.
+Main thread ending.
+
+#note
+Is alive in the do while which is read only ie getter property   
+  in place of count
+----------------------------------------------------------------
+============================================================
+ParameterizedThreadStart start to pass argument to thread
+code-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    class MyThread
+    {
+        public int Count;
+        public Thread Thrd; //reference of thread class
+                            // Notice that MyThread is also pass an int value. 
+        public MyThread(string name, int num)
+        {
+            Count = 0;
+            // Explicitly invoke ParameterizedThreadStart constructor 
+            // for the sake of illustration. 
+            Thrd = new Thread(this.Run);
+            Thrd.Name = name;
+            // Here, Start() is passed num as an argument. 
+            Thrd.Start(num);
+        }
+        // Notice that this version of Run() has// a parameter of type object. 
+
+        void Run(object num) // pre definied delegite ie object ie boxing num
+        {
+            Console.WriteLine(Thrd.Name +
+                              " starting with count of " + num);
+
+            do
+            {
+                Thread.Sleep(500);
+                Console.WriteLine("In " + Thrd.Name + ", Count is " + Count);
+                Count++;
+            } while (Count < (int)num); //unboxing
+
+            Console.WriteLine(Thrd.Name + " terminating.");
+        }
+    }
+
+    class PassArgDemo
+    {
+        static void Main()
+        {
+            // Notice that the iteration count is passed 
+            // to these two MyThread objects. 
+            MyThread mt = new MyThread("Child #1", 5);
+            MyThread mt2 = new MyThread("Child #2", 3);
+
+            do
+            {
+                Thread.Sleep(100);
+            } while (mt.Thrd.IsAlive || mt2.Thrd.IsAlive);
+
+            Console.WriteLine("Main thread ending.");
+        }
+    }
+}
+
+
+
+o/p
+Child #1 starting with count of 5
+Child #2 starting with count of 3
+In Child #1, Count is 0
+In Child #2, Count is 0
+In Child #1, Count is 1
+In Child #2, Count is 1
+In Child #1, Count is 2
+In Child #2, Count is 2
+Child #2 terminating.
+In Child #1, Count is 3
+In Child #1, Count is 4
+Child #1 terminating.
+Main thread ending.
+#note
+Thread looking to method and that method have parameter , here with and without parameter thus start ()ie method overloading 
+======================================================
+LOCK
+  Y = to make  the method is syncronized.
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    public class Printer
+    {
+        Object obj = new object();
+        public void PrintNumbers()
+        {
+            // Monitor.Enter(obj); // this is a static  class  havve method enter and exit
+         //   lock (obj) //lock is a keyword ie when this thread is sleepin another thread will not entr in this block for execution 
+          //  {
+                // Display Thread info.
+                Console.WriteLine("-> {0} is executing PrintNumbers()",
+                  Thread.CurrentThread.Name);
+                // Print out numbers.
+                Console.Write("Your numbers: ");
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.Write("{0}, ", i);
+                    Thread.Sleep(200);
+                }
+                Console.WriteLine();
+                //  Monitor.Exit(obj);            }
+          //  }
+        }
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+
+                // Name the current thread.
+                Thread primaryThread = Thread.CurrentThread;
+                primaryThread.Name = "Primary";
+
+                // Display Thread info.
+                Console.WriteLine("-> {0} is executing Main()",
+                Thread.CurrentThread.Name);
+
+                // Make worker class.
+                Printer p = new Printer();
+
+                // Now make the thread.
+                Thread t1 = new Thread(new ThreadStart(p.PrintNumbers));
+                t1.Name = "1st";
+                t1.Start();
+                // Now make the thread.
+                Thread t2 = new Thread(new ThreadStart(p.PrintNumbers));
+                t2.Name = "2nd";
+                t2.Start();
+
+                Thread t3 = new Thread(new ThreadStart(p.PrintNumbers));
+                t3.Name = "3rd";
+                t3.Start();
+
+                Console.ReadLine();
+            }
+
+        }
+    }
+}
+o/p [1]
+-> Primary is executing Main()
+-> 1st is executing PrintNumbers()
+Your numbers: -> 3rd is executing PrintNumbers()
+-> 2nd is executing PrintNumbers()
+Your numbers: Your numbers: 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9,
+
+but the error thus we need to 
+lock is a keyword ie when this thread is sleepin another thread will not entr in this block for execution
+
+now-
+  public void PrintNumbers()
+        {
+            // Monitor.Enter(obj); // this is a static  class  havve method enter and exit
+           lock (obj) //lock is a keyword ie when this thread is sleepin another thread will not entr in this block for execution 
+           {
+                // Display Thread info.
+                Console.WriteLine("-> {0} is executing PrintNumbers()",
+                  Thread.CurrentThread.Name);
+                // Print out numbers.
+                Console.Write("Your numbers: ");
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.Write("{0}, ", i);
+                    Thread.Sleep(200);
+                }
+                Console.WriteLine();
+                //  Monitor.Exit(obj);      
+      
+           }
+        }
+#using -this- is not good practice
+Real life eg:widrwal of deposit
+ 
+o/p [correct]
+-> Primary is executing Main()
+-> 2nd is executing PrintNumbers()
+Your numbers: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+-> 1st is executing PrintNumbers()
+Your numbers: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+-> 3rd is executing PrintNumbers()
+Your numbers: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+=================================================
+These was for Thread programming
+*namespace used --System.Threading.Thread
+*Can one Thread can be async prog .
+Yes , we have java
+*When constuctor is called the Delegate comes into picture -
+parametered Start() , Thread Start()
+*thread.sleep(); is blocking the main until the Thread complete the job
+*In Thread u need to kill the process but not in Task .
+*Thread.Sleep()-ntg can be done  to abort this except waiting until the time elapses or by restarting the application because thread.Sleep suspends the thread the 's making the call .
+
