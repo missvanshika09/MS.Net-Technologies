@@ -66,14 +66,6 @@
 
 ---
 
-<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=missvanshika09&show_icons=true&locale=en&layout=compact" alt="missvanshika09" /></p>
-
-<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=missvanshika09&show_icons=true&locale=en" alt="missvanshika09" /></p>
-
-<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=missvanshika09&" alt="missvanshika09" /></p>
-
----
-
 <h3 align="left">📜 License</h3>
 This project is open-source and licensed under the MIT License.
 
