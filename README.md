@@ -70,7 +70,7 @@
     <img src="https://www.svgrepo.com/show/303229/microsoft-sql-server-logo.svg" alt="sqlserver" width="40" height="40"/> 
   </a>
   <a href="https://swagger.io/" target="_blank" rel="noreferrer"> 
-    <img src="https://swagger.io/img/assets/images/logo-styled.svg" alt="swagger" width="40" height="40"/> 
+    <img src="[https://swagger.io/img/assets/images/logo-styled.svg](https://www.google.com/search?q=swagger.io+image&oq=swagger.io+image&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIICAEQABgWGB4yCggCEAAYgAQYogQyCggDEAAYgAQYogQyCggEEAAYgAQYogQyCggFEAAYgAQYogQyCggGEAAYgAQYogTSAQkxMDE1NmowajSoAgCwAgE&sourceid=chrome&ie=UTF-8#imgrc=k_bVmcCBIx-k8M&imgdii=cFd1pATom6mbsM)" alt="swagger" width="40" height="40"/> 
   </a>
 </p>
 
