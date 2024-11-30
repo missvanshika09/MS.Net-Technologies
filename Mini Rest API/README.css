@@ -1,0 +1,14 @@
+# Employee Management API with SQL Server and Swagger Integration
+
+## Overview
+This project provides a RESTful API for managing employee data using ASP.NET Core and SQL Server. It demonstrates the use of Entity Framework Core, Swagger for API documentation, and the repository pattern for clean code architecture.
+
+## Features
+- CRUD operations for employee management.
+- SQL Server integration with Entity Framework Core.
+- Swagger/OpenAPI for testing and documentation.
+- Repository pattern for scalable data management.
+- Customizable CORS policy.
+
+## How to Run
+1. Clone the repository:
