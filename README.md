@@ -1,4 +1,7 @@
 <div id="header" align="center"> <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" width="100"/> </div> <h1 align="center"><1>Member Management API with Swagger Integration</h1> <h3 align="center">A CRUD-based Member Management API with Swagger Integration using ASP.NET Core, integrated with SQL Server and Swagger for seamless API management and documentation.</h3> <p align="left"> <img src="https://komarev.com/ghpvc/?username=missvanshika09&label=Project%20views&color=0e75b6&style=flat" alt="missvanshika09" /> </p>
+
+   
+<div id="header" align="center"> <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" width="100"/> </div> <h1 align="center"><2>Employee Management API with SQL Server and Swagger Integration</h1> <h3 align="center">A CRUD-based Employee Management API using ASP.NET Core, integrated with SQL Server and Swagger for seamless API management and documentation.</h3> <p align="left"> <img src="https://komarev.com/ghpvc/?username=missvanshika09&label=Project%20views&color=0e75b6&style=flat" alt="missvanshika09" /> </p>
 🚀 How to Run
 Step 1: Clone the repository
 git clone https://github.com/username/repository.git
@@ -20,9 +23,7 @@ Update-Database
  Run the project:
  dotnet run
  
-Here’s the reformatted README.md for your "Employee Management API with SQL Server and Swagger Integration" project, presented in the requested GitHub profile-style format:
 
-<div id="header" align="center"> <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" width="100"/> </div> <h1 align="center"><2>Employee Management API with SQL Server and Swagger Integration</h1> <h3 align="center">A CRUD-based Employee Management API using ASP.NET Core, integrated with SQL Server and Swagger for seamless API management and documentation.</h3> <p align="left"> <img src="https://komarev.com/ghpvc/?username=missvanshika09&label=Project%20views&color=0e75b6&style=flat" alt="missvanshika09" /> </p>
 📝 Overview
 This project provides a RESTful API for managing employee data using ASP.NET Core and SQL Server. It demonstrates:
 
