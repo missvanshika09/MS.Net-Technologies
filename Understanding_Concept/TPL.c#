@@ -1,1 +1,326 @@
 
+
+ Task Parallel Library (TPL) and Async prog. 
+
+
+
+==================================================================
+/*Task.Run */
+Shortcut-Creating the thread and  starting the thread. Run() is A.wait(); thus asyc prog started.
+default Task Schedular.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Thread.CurrentThread.Name = "Main";
+
+            // Define and run the task.
+            Task taskA = Task.Run(() => Console.WriteLine("Hello from taskA."));
+
+            // Output a message from the calling thread.
+            Console.WriteLine("Hello from thread '{0}'.", Thread.CurrentThread.Name);
+            taskA.Wait();
+
+            Console.WriteLine("done");
+            Console.ReadLine();
+        }
+    }
+}
+
+o/p
+Hello from taskA.
+Hello from thread 'Main'.
+done
+=================================================
+/*TaskFactory.StartNew   */
+method to create and start a task in one operation similar to Run
+Used- when you require additional task creation options or the use of a specific scheduler.
+Customized Task Schdeular.
+Task.Delay()- not blocking code so the calling of other  thread will go on , so the UI will remain responsive(ie other thread do there job).
+
+
+code-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dayone
+{
+    class Program
+    {
+        static void Main(string[] args)
+
+        {
+            Thread.CurrentThread.Name = "Main";
+
+            // Better: Create and start the task in one operation. 
+            Task taskA = Task.Factory.StartNew(() => Console.WriteLine("Hello from taskA."));
+
+            // Output a message from the calling thread.
+            Console.WriteLine("Hello from thread '{0}'.",
+                              Thread.CurrentThread.Name);
+
+            taskA.Wait();
+            Console.WriteLine("done");
+            Console.ReadLine();
+        }
+    }
+}
+====================================================
+
+
+###################################################################
+
+Parallel.Invoke
+------------------------------
+ System.Threading.Tasks= namespace 
+“provides library-based data parallel replacements for common operations such as for loops, for each loops, and execution of a set of statements.
+
+code-
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace _01_console
+{
+
+    class Program
+    {
+        static void GenerateNumbers()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine("Method1 - Number: {0}", i);
+                Thread.Sleep(1000);
+            }
+        }
+
+        static void PrintCharacters()
+        {
+            string str = "dotnetdata";
+            for (int i = 0; i < str.Length; i++)
+            {
+                Console.WriteLine("Method2 - Character: {0}", str[i]);
+                Thread.Sleep(1000);
+            }
+
+        }
+
+        static void PrintArray()
+        {
+            int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            foreach (int i in arr)
+            {
+                Console.WriteLine("Method3 - Array: {0}", i);
+                Thread.Sleep(1000);
+            }
+        }
+        static void Main(string[] args)
+        {
+            Parallel.Invoke(
+     new Action(GenerateNumbers),
+     new Action(PrintCharacters),
+     new Action(PrintArray)
+     );
+
+            Console.ReadLine();
+        }
+    }
+}
+
+o/p
+Method1 - Number: 0
+Method2 - Character: d
+Method3 - Array: 1
+Method1 - Number: 1
+Method3 - Array: 2
+Method2 - Character: o
+Method1 - Number: 2
+Method2 - Character: t
+Method3 - Array: 3
+Method1 - Number: 3
+Method3 - Array: 4
+Method2 - Character: n
+Method1 - Number: 4
+Method2 - Character: e
+Method3 - Array: 5
+Method1 - Number: 5
+Method3 - Array: 6
+Method2 - Character: t
+Method1 - Number: 6
+Method3 - Array: 7
+Method2 - Character: d
+Method1 - Number: 7
+Method2 - Character: a
+Method3 - Array: 8
+Method1 - Number: 8
+Method2 - Character: t
+Method1 - Number: 9
+Method2 - Character: a
+ #note 
+Generall idea of parall prog.
+Thread can work parallelly ? Yes if we have multiple core. and we dnt need Thread.sleep() as different core will work  efficiently.
+---------------------------------------------------------
+		/*Parallel.Invoke() which return result*/
+methods that return a value, you would need to use the Task(TResult) class which represents an asynchronous operation that can return a value
+
+
+code-
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+namespace Dayone
+{
+    class Program
+    {
+
+        static int GenerateNumbers()
+        {
+            int i;
+            for (i = 0; i < 7; i++)
+            {
+                Console.WriteLine("Method1 - Number: {0}", i);
+                Thread.Sleep(1000);
+            }
+            return i;
+        }
+
+
+        static string PrintCharacters()
+        {
+            string str = "dotnet";
+            for (int i = 0; i < str.Length; i++)
+            {
+                Console.WriteLine("Method2 - Character: {0}", str[i]);
+                Thread.Sleep(1000);
+            }
+            return str;
+        }
+        static int PrintArray()
+        {
+            int[] arr = { 1, 2, 3, 4, 5 };
+            foreach (int i in arr)
+            {
+                Console.WriteLine("Method3 - Array: {0}", i);
+                Thread.Sleep(1000);
+            }
+            return arr.Count();
+        }
+
+        static void Main(string[] args)
+        {
+            // Create the Tasks
+            Task<int> t1 = new Task<int>(GenerateNumbers);// thread made
+            Task<string> t2 = new Task<string>(PrintCharacters);
+            Task<int> t3 = new Task<int>(PrintArray);
+            // Start the tasks
+            t1.Start();// order is not in control thus any one call any thread t1,t2 etc
+            t2.Start();
+            t3.Start();
+            //Print Return Value
+            Console.WriteLine("Numbers generated till {0}", t1.Result);
+            Console.WriteLine("Original String {0}", t2.Result);
+            Console.WriteLine("Array Count {0}", t3.Result);
+            Console.ReadLine();
+        }
+    }
+
+}
+
+o/p
+Method2 - Character: d
+Method1 - Number: 0
+Method3 - Array: 1
+Method3 - Array: 2
+Method2 - Character: o
+Method1 - Number: 1
+Method1 - Number: 2
+Method3 - Array: 3
+Method2 - Character: t
+Method2 - Character: n
+Method1 - Number: 3
+Method3 - Array: 4
+Method3 - Array: 5
+Method1 - Number: 4
+Method2 - Character: e
+Method2 - Character: t
+Method1 - Number: 5
+Method1 - Number: 6
+Numbers generated till 7
+Original String dotnet
+Array Count 5
+-----------------------------------------------------------------------------------------------------
+			/*Background Thread*/
+Background threads (sometimes called daemon threads) are viewed by the CLR as
+expendable paths of execution that can be ignored at any point in time (even if they are currently laboring over some unit of work). 
+
+code-
+using System;
+using System.Threading;
+//using System.Windows.Forms;
+
+namespace Dayone
+{
+    public class Printer
+    {
+        public void PrintNumbers()
+        {  // Display Thread info.
+            Console.WriteLine("-> {0} is executing PrintNumbers()",
+              Thread.CurrentThread.Name);
+
+            // Print out numbers.
+            Console.Write("Your numbers: ");
+            for (int i = 0; i < 10; i++)
+            {
+                Console.Write("{0}, ", i);
+                Thread.Sleep(2000);
+            }
+            Console.WriteLine();
+
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("***** Background Threads *****\n");
+            Printer p = new Printer();
+            Thread bgroundThread = new Thread(new ThreadStart(p.PrintNumbers));
+            // This is now a background thread.
+            bgroundThread.IsBackground = true;
+            bgroundThread.Start();
+        }
+
+    }
+}
+#note
+foreground and background threads are not synonymous with primary and worker threads. By default, every thread you create via the Thread.Start() method is automatically a foreground thread. 
+o/p
+***** Background Threads *****
+
+
+How to make Thread background Thread?
+IsBackground =True;
+It is dangours to use as  not genrateed it will execute.Thus Main can be finish earlier and the Background Thread which will print number 0 to 10 will not able to finish the job .
+Thus we always have forgound thread .
+
+
+
+
