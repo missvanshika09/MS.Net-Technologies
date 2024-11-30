@@ -2,6 +2,16 @@
   <img src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="100"/>
 </div>
 
+<h1 align="center">Member Management API with Swagger Integration</h1>
+
+  
+<h3 align="center">This project is a simple Member Management API built using ASP.NET Core. It demonstrates the use of:
+
+<br>CRUD operations (Create, Read, Update, Delete) for managing members.</br>
+<br>Dependency Injection (DI) for service management.</br>
+<br>Swagger integration for generating API documentation.</br>
+<br>A basic in-memory data repository simulating a database.</br></h3>
+
 <h1 align="center">Employee Management API with SQL Server and Swagger Integration</h1>
   
 <h3 align="center">A CRUD-based Employee Management API using ASP.NET Core, integrated with SQL Server and Swagger for seamless API management and documentation.</h3>
