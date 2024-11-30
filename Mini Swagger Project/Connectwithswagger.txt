@@ -1,0 +1,199 @@
+How to work with swagger -
+ /*IMembers.cs*/
+
+using WebAPI.Controllers.Model;
+using static WebAPI.Controllers.Services.IMembers;
+
+namespace WebAPI.Controllers.Services
+{
+    public interface IMembers
+    {
+        List<Members> GetAllMember();
+        Members GetMember(int id);
+        Members Add(Members employee);
+        Members Update(int id, Members MembersChanges);
+        Members Delete(int Id);
+
+
+    }
+
+}
+
+/*MemberController.cs*/
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using WebAPI.Controllers.Model;
+using WebAPI.Controllers.Services;
+
+namespace WebAPI.Controllers.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MemberController : ControllerBase
+    {
+        private readonly IMembers member;
+        public MemberController(IMembers mem)
+        {
+            member = mem;
+
+        }
+        [HttpGet]
+        public IEnumerable<Members> Get()
+        {
+            return member.GetAllMember();
+        }
+        [HttpGet("{id}")]
+        public Members Get(int id)
+        {
+            return member.GetMember(id);
+        }
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            member.Delete(id);
+        }
+        [HttpPut("{id}")]
+        public Members Put(int id, [FromBody] Members memberput)
+        {
+            return member.Update(id, memberput);
+        }
+        [HttpPost]
+        public Members Post(Members mem)
+        {
+            member.Add(mem);
+            return mem;
+        }
+    }
+}
+
+/*Members.cs*/
+namespace WebAPI.Controllers.Model
+{
+    public class Members
+    {
+        public int MemberId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Address { get; set; }
+
+    }
+}
+
+
+/*MembersRepository.cs*/
+using WebAPI.Controllers.Model;
+
+namespace WebAPI.Controllers.Services
+{
+    public class MembersRepository : IMembers
+    {
+        static List<Members> lisMembers = new List<Members>
+            {
+            new Members{MemberId=1, FirstName="Kirtesh", LastName="Shah", Address="Mumbai" },
+            new Members{MemberId=2, FirstName="Nitya", LastName="Shah", Address="Vadodara" },
+            new Members{MemberId=3, FirstName="Dilip", LastName="Shah", Address="Banglore" },
+            new Members{MemberId=4, FirstName="Atul", LastName="Shah", Address="Indore" },
+            new Members{MemberId=5, FirstName="Swati", LastName="Shah", Address="Mumbai" },
+            new Members{MemberId=6, FirstName="Rashmi", LastName="Shah", Address="Ahamdabad" },
+            };
+            public List<Members> GetAllMember()
+        {
+            return lisMembers;
+        }
+
+        public Members GetMember(int id)
+        {
+            return lisMembers.FirstOrDefault(x => x.MemberId == id);
+        }
+        public Members Add(Members member)
+        {
+            member.MemberId = lisMembers.Max(e => e.MemberId) + 1;
+            lisMembers.Add(member);
+            return member;
+        }
+        public Members Delete(int Id)
+        {
+            Members members = lisMembers.FirstOrDefault(e => e.MemberId == Id);
+            if (members != null)
+            {
+                lisMembers.Remove(members);
+            }
+            return members;
+        }
+
+        public Members Update(int id, Members MembersChanges)
+        {
+            Members member = lisMembers.FirstOrDefault(e => e.MemberId == MembersChanges.MemberId);
+            if (member != null)
+            {
+                member.FirstName = MembersChanges.FirstName;
+                member.LastName = MembersChanges.LastName;
+                member.Address = MembersChanges.Address;
+            }
+            return member;
+        }
+
+    }
+}
+  
+  
+
+/*Program.cs*/
+        
+using WebAPI.Controllers.Services;
+
+namespace WebAPI.Controllers
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddScoped<IMembers, MembersRepository>();
+             
+            builder.Services.AddSwaggerGen();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+}
+
+/*WebAPI.Controllers.csproj */
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+</Project>
+
+
+    
